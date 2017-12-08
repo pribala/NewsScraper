@@ -102,23 +102,22 @@ $(document).on("click", "#addNote", function() {
   })
     // With that done, add the note information to the page
     .done(function(data) {
-      $(".modal-body").html("");
-      console.log(data);
+      
       if(data.note.length===0){
         $(".modal-body").append("<h5>Article has no notes!</h5>");
       }else{
         data.note.forEach(function(item){
           // The title of the article
-          $("#notes").append("<li>" + item.title +":"+ item.body + "</li>");
+          $(".notes").append("<p>Title: " + item.title +"<br>"+ item.body + "</p>");
         });
        }  
 
       // An input to enter a new title
-        $(".modal-body").append("<input id='titleinput' name='title' class='mb-3'><br>");
+        $(".notePad").append("<input id='titleinput' name='title' class='mb-3 form-control'><br>");
         // A textarea to add a new note body
-        $(".modal-body").append("<textarea id='bodyinput' name='body'></textarea><br>");
+        $(".notePad").append("<textarea class='form-control' id='bodyinput' name='body'></textarea><br>");
         // A button to submit a new note, with the id of the article saved to it
-        $(".modal-body").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
+        $(".notePad").append("<button class='btn btn-dark mt-3' data-id='" + data._id + "' id='savenote'>Save Note</button>");
       // If there's a note in the article
       // if (data.note) {
       //   // Place the title of the note in the title input
@@ -151,8 +150,6 @@ $(document).on("click", "#savenote", function() {
     .done(function(data) {
       // Log the response
       console.log(data);
-      // Empty the notes section
-      $("#notes").empty();
     });
 
   // Also, remove the values entered in the input and textarea for note entry
