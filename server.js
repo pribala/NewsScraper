@@ -1,37 +1,93 @@
+// Require all necessary npm packages 
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+
+// Our scraping tools
+// Axios is a promised-based http library, similar to jQuery's Ajax method
+// It works on the client and on the server
+var axios = require("axios");
 var cheerio = require("cheerio");
-var request = require("request");
 
-// Make a request call to grab the HTML body from the site of your choice
-request("https://minimalistbaker.com/", function(error, response, html) {
+// Require all models
+var db = require("./models");
 
-  // Load the HTML into cheerio and save it to a variable
-  // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
-  var $ = cheerio.load(html);
+var PORT = 3000;
 
-  // An empty array to save the data that we'll scrape
-  var results = [];
+// Initialize Express
+var app = express();
 
-  // Select each element in the HTML body from which you want information.
-  // NOTE: Cheerio selectors function similarly to jQuery's selectors,
-  // but be sure to visit the package's npm page to see how it works
-  $("article").each(function(i, element) {
+// Configure middleware
 
-    
-    var title = $(element).find('.entry-header').find('.entry-title').text();
-    var link = $(element).find('.entry-header').find('.entry-title').find('a').attr("href");
-    var img = $(element).find('.entry-content').find('a').find('img').attr("src");
-    var summary = $(element).find('.entry-content').find('p').text();
-    if(title.length !=0){
-    // Save these results in an object that we'll push into the results array we defined earlier
-    results.push({
-      title: title,
-      link: link,
-      img: img,
-      summary: summary
-    });
-  }
-  });
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Use body-parser for handling form submissions
+app.use(bodyParser.urlencoded({ extended: false }));
+// Use express.static to serve the public folder as a static directory
+app.use(express.static("public"));
 
-  // Log the results once you've looped through each of the elements found with cheerio
-  console.log(results);
+// Set mongoose to leverage built in JavaScript ES6 Promises
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+mongoose.connect("mongodb://localhost/recipes", {
+  useMongoClient: true
 });
+
+// Routes
+
+// A GET route for scraping the Minimalistic Baker website
+app.get("/scrape", function(req, res) {
+  
+  // First, we grab the body of the html with request
+  axios.get("https://www.wsj.com/").then(function(response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
+    
+    // Now, we grab every article tag, and do the following:
+    $(".wsj-card").each(function(i, element) {
+      // Save an empty result object
+      var result = {};
+
+      // Add the text and href of every link, and save them as properties of the result object
+      result.headLine = $(this).find('.wsj-headline').text();
+      result.urlLink = $(this).find('.wsj-headline').find('.wsj-headline-link').attr('href');
+      result.summary = $(this).find('.wsj-card-body').find('.wsj-summary').text();
+      // Create a new Article using the `result` object built from scraping
+      db.Article
+        .create(result)
+        .then(function(dbArticle) {
+        	// If we were able to successfully scrape and save an Article, send a message to the client
+          console.log('scrape complete', dbArticle);
+        })
+        .catch(function(err) {
+          // If an error occurred, send it to the client
+          res.json(err);
+        });
+    });
+    res.send('Scrape Complete');
+  });
+});
+
+// Route for getting all Articles from the db
+app.get("/articles", function(req, res) {
+  // Grabs all of the articles
+  db.Article
+    .find({})
+    .then(function(dbArticle) {
+      // If all Articles are successfully found, send them back to the client
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      // If an error occurs, send the error back to the client
+      res.json(err);
+    });
+});
+
+// Listen on port 3000
+app.listen(3000, function() {
+  console.log("App running on port 3000!");
+});
+
+
+  
