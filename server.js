@@ -46,7 +46,7 @@ app.get("/scrape", function(req, res) {
     var results = [];
 
     // Now, we grab every article tag, and do the following:
-    $(".LS-SECONDARY-ALT").each(function(i, element) {
+    $(".wsj-card").each(function(i, element) {
       // Save an empty result object
       //var result = {};
 
@@ -68,11 +68,13 @@ app.get("/scrape", function(req, res) {
       var title = $(this).find('.wsj-headline').text();
       var link  = $(this).find('.wsj-headline').find('.wsj-headline-link').attr('href');
       var summary = $(this).find('.wsj-card-body').find('.wsj-summary').text();
-      results.push({
-        title: title,
-        link: link,
-        summary: summary
-      });
+      if(summary.length!==0){
+        results.push({
+          title: title,
+          link: link,
+          summary: summary
+        });
+      }
     });
     res.json(results);
   });

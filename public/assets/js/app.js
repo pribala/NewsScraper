@@ -7,9 +7,9 @@ $("#scrape").click(function(e){
   e.preventDefault();
   $.get("/scrape", function(data) {
     $("#main").empty();
-    $('.modal-title').text('News Scraper');
-    $('.modal-body').html("<p> Scraped "+ data.length+" new articles.</p>");
-    $('.modal').modal('toggle')
+    $('.infoTitle').text('News Scraper');
+    $('.infoText').html("<p> Scraped "+ data.length+" new articles.</p>");
+    $('.infoModal').modal('toggle')
     
     for (var i = 0; i < data.length; i++) {
       // Display the apropos information on the page
@@ -63,9 +63,9 @@ $(document).on("click", "#saveArticle", function(){
     .done(function(data) {
       // Log the response
       console.log(data);
-      $('.modal-title').text('News Scraper');
-      $('.modal-body').html("<p>"+ data +"</p>");
-      $('.modal').modal('toggle')
+      $('.infoTitle').text('News Scraper');
+      $('.infoText').html("<p>"+ data +"</p>");
+      $('.infoModal').modal('toggle')
     });
 
 });
@@ -89,8 +89,10 @@ $(document).on("click", "#deleteArticle", function(){
 
 // Add a note
 $(document).on("click", "#addNote", function() {
-  $('.modal-title').text('Article Notes');
-  $('.modal').modal('toggle');
+  $('.noteTitle').text('Article Notes');
+  $('.notePad').empty();
+  $('.notes').empty();
+  $('.noteModal').modal('toggle');
 
   // Save the id from the button tag
   var thisId = $(this).attr("data-id");
@@ -104,7 +106,7 @@ $(document).on("click", "#addNote", function() {
     .done(function(data) {
       
       if(data.note.length===0){
-        $(".modal-body").append("<h5>Article has no notes!</h5>");
+        $(".notes").append("<h5>Article has no notes!</h5>");
       }else{
         data.note.forEach(function(item){
           // The title of the article
