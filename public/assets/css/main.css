@@ -45,3 +45,7 @@ a:hover {
 #brandTitle {
   color: #C82333;
 }
+
+.modal-content {
+  background-color: #F3E7C3;
+}

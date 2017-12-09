@@ -107,14 +107,15 @@ $(document).on("click", "#addNote", function() {
       if(data.note.length===0){
         $(".notes").append("<h5>Article has no notes!</h5>");
       }else{
+        $(".notes").append("<h5>Saved Notes</h5>");
         data.note.forEach(function(item){
           // The title of the article
-          $(".notes").append("<p>Title: " + item.title +"<br>"+ item.body + " <button data-id='"+item._id+"'class='btn delNote'><i class='fa fa-trash-o' aria-hidden='true'></i></button></p>");
+          $(".notes").append("<p><strong>Title: </strong>" + item.title + " <button data-id='"+item._id+"'class='btn btn-dark delNote float-right'><i class='fa fa-trash-o' aria-hidden='true'></i></button><br>"+ item.body+"</p>");
         });
        }  
 
       // An input to enter a new title
-        $(".notePad").append("<input id='titleinput' name='title' class='mb-3 form-control'><br>");
+        $(".notePad").append("<h5>Add Note</h5><input id='titleinput' name='title' class='mb-3 form-control'><br>");
         // A textarea to add a new note body
         $(".notePad").append("<textarea class='form-control' id='bodyinput' name='body'></textarea><br>");
         // A button to submit a new note, with the id of the article saved to it
