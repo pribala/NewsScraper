@@ -38,10 +38,6 @@ mongoose.connect( MONGODB_URI, {
  });
 
 // Routes
-// A GET route for scraping the Minimalistic Baker website
-app.get("/", function(req, res) {
-    res.render("index.html");
-});
 
 // A GET route for scraping the Minimalistic Baker website
 app.get("/scrape", function(req, res) {
@@ -182,7 +178,7 @@ app.delete("/delete/note/:id", function(req, res) {
   });
 });
 
-// Listen on port 3000
+// Listen on port 3030
 app.listen(PORT, function() {
   console.log("App running on port 3030!");
 });

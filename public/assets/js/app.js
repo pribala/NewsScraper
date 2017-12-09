@@ -30,7 +30,7 @@ $("#scrape").click(function(e){
   $.getJSON('/articles', function(data) {
     $("#main").empty();
     if(data.length === 0){
-      $("#main").append("<p>No saved data!</p>");
+      $("#main").append("<h5>No saved data!</h5>");
     }else{
     //For each one
       for (var i = 0; i < data.length; i++) {
