@@ -103,7 +103,7 @@ $(document).on("click", "#addNote", function() {
   })
     // With that done, add the note information to the page
     .done(function(data) {
-      
+      $('.noteTitle').text(data.headLine);
       if(data.note.length===0){
         $(".notes").append("<h5>Article has no notes!</h5>");
       }else{
