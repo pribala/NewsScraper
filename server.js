@@ -38,6 +38,32 @@ mongoose.connect( MONGODB_URI, {
  });
 
 // Routes
+// A GET route for scraping the Minimalistic Baker website
+app.get("/", function(req, res) {
+  
+  // First, we grab the body of the html with request
+  axios.get("https://www.wsj.com/").then(function(response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
+    var results = [];
+
+    // Now, we grab every article tag, and do the following:
+    $(".wsj-card").each(function(i, element) {
+     
+      var title = $(this).find('.wsj-headline').text();
+      var link  = $(this).find('.wsj-headline').find('.wsj-headline-link').attr('href');
+      var summary = $(this).find('.wsj-card-body').find('.wsj-summary').text();
+      if(summary.length!==0){
+        results.push({
+          title: title,
+          link: link,
+          summary: summary
+        });
+      }
+    });
+    res.json(results);
+  });
+});
 
 // A GET route for scraping the Minimalistic Baker website
 app.get("/scrape", function(req, res) {
