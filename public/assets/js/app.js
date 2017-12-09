@@ -84,7 +84,6 @@ $(document).on("click", "#deleteArticle", function(){
       console.log(data);
       getData();
     });
-
 });
 
 // Add a note
@@ -110,7 +109,7 @@ $(document).on("click", "#addNote", function() {
       }else{
         data.note.forEach(function(item){
           // The title of the article
-          $(".notes").append("<p>Title: " + item.title +"<br>"+ item.body + "</p>");
+          $(".notes").append("<p>Title: " + item.title +"<br>"+ item.body + " <button data-id='"+item._id+"'class='btn delNote'><i class='fa fa-trash-o' aria-hidden='true'></i></button></p>");
         });
        }  
 
@@ -159,3 +158,18 @@ $(document).on("click", "#savenote", function() {
   $("#bodyinput").val("");
 });
 })
+
+// Delete an article
+$(document).on("click", ".delNote", function(){
+  // Run a DELETE request to delete note
+  var id = $(this).attr("data-id");
+  $.ajax({
+    method: "DELETE",
+    url: "/delete/note/"+ id,
+    })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+    });
+});

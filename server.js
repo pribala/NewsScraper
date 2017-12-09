@@ -126,8 +126,7 @@ app.post("/api/article", function(req, res){
 
 // Delete an article
 app.delete("/delete/article/:id", function(req, res) {
-  // Remember: when searching by an id, the id needs to be passed in
-  // as (mongojs.ObjectId(IDYOUWANTTOFIND))
+  
   var id = req.params.id;
   //console.log(id);
   db.Article.deleteOne({ "_id": id }, 
@@ -160,6 +159,20 @@ app.post("/articles/:id", function(req, res) {
       // If an error occurs, send it back to the client
       res.json(err);
     });
+});
+
+// Delete a note
+app.delete("/delete/note/:id", function(req, res) {
+  
+  var id = req.params.id;
+  //console.log(id);
+  db.Note.deleteOne({ "_id": id }, 
+    function(err, deleted) {
+    // Log any errors if the server encounters one
+    if (err) throw err;
+       // Otherwise, send the result of this query to the browser
+      res.send(deleted);
+  });
 });
 
 // Listen on port 3000
